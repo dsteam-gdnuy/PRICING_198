@@ -1,10 +1,16 @@
-from utils import snowflake_login, enviar_email
+from utils import snowflake_login, enviar_email, get_credentials
 import os
 from datetime import date
 import sys
 
+credentials_snowflake = get_credentials("snow")
+
 #Logueamos
-user, cursor, snowflake_connection = snowflake_login()
+user, cursor, snowflake_connection = snowflake_login(
+                                    user = credentials_snowflake['USER'],
+                                    password = credentials_snowflake['PASS'],
+                                    account = credentials_snowflake['ACCOUNT']
+                                    )
 
 try:
     #Se descarga resultado del modelo
@@ -31,7 +37,7 @@ try:
     df.to_excel('INFO PRICING 198 ' + str(date.today().year) + mes + dia + '.xlsx', index=False)
 
     #Se envía mail
-    enviar_email(sender='marcos.larran@tata.com.uy', receiver=['marcela.moreira@tata.com.uy', 'nahuel.hartwig@tata.com.uy'],
+    enviar_email(sender='marcos.larran@tata.com.uy', receiver=['marcela.moreira@tata.com.uy', 'nahuel.hartwig@tata.com.uy', 'meinller.barosic@tata.com.uy'],
                  subject='Modelo Pricing Ecommerce',
                  body='Buenas tardes\n\nSe envía el resultado del modelo de pricing de ecommerce del día de la fecha.\n\nSaludos,',
                  files=['INFO PRICING 198 ' + str(date.today().year) + mes + dia + '.xlsx'])
